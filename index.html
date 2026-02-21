@@ -207,7 +207,17 @@
     async function login() {
       const email = document.getElementById("emailInput").value.trim();
       if (!email) return alert("Please enter your email");
+      
+      async function adminLogin() {
+  const { error } = await supabase.auth.signInAnonymously();
 
+  if (error) {
+    alert("Admin login error: " + error.message);
+  } else {
+    checkUser();
+  }
+}
+window.adminLogin = adminLogin;
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: { emailRedirectTo: "https://todo-app-eight-plum-26.vercel.app/" }
