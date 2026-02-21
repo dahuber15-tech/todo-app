@@ -1,42 +1,203 @@
 <!DOCTYPE html>
 <html>
-  <h4>VERSION 2</h4>
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Tasks</title>
+
+  <!-- IMPORTANT: UMD build so window.supabase exists -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, rgba(255,255,255,0.12), transparent),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(520px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .version {
+      text-align: center;
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: 34px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .title.small {
+      font-size: 22px;
+      text-align: left;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      text-align: center;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .label {
+      display: block;
+      margin: 8px 0 6px;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px 14px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline: none;
+    }
+    .input::placeholder { color: rgba(255,255,255,0.45); }
+
+    .btn {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    .btn.primary {
+      background: rgba(255,255,255,0.14);
+      color: var(--text);
+    }
+    .btn.primary:hover { background: rgba(255,255,255,0.20); }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--muted);
+    }
+    .btn.ghost:hover { color: var(--text); }
+
+    .hint {
+      margin: 12px 0 0;
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .row .input { flex: 1; }
+    .row .btn { width: auto; margin-top: 0; padding: 12px 14px; }
+
+    .list { list-style: none; padding: 0; margin: 16px 0 0; }
+    .list li {
+      padding: 12px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      background: rgba(0,0,0,0.18);
+      font-size: 18px;
+      word-break: break-word;
+    }
+  </style>
 </head>
+
 <body>
-  <h3 style="color:red">THIS IS THE FILE FROM VS CODE</h3>
+  <div class="page">
+    <!-- LOGIN -->
+    <div id="authSection" class="card">
+      <div class="version">VERSION 2</div>
 
-  <div id="authSection">
-    <h2>Login</h2>
-    <input id="emailInput" placeholder="Your email" />
-    <button onclick="window.login()">Send Magic Link</button>
-  </div>
+      <h1 class="title">Welcome to Your To-Do App</h1>
+      <p class="subtitle">Sign in to sync tasks across devices.</p>
 
-  <div id="appSection" style="display:none;">
-    <h1>My Task Manager</h1>
+      <div id="emailStep" style="display:none;">
+        <label class="label" for="emailInput">Email</label>
+        <input id="emailInput" class="input" type="email" placeholder="you@example.com" />
+        <button class="btn primary" onclick="window.login()">Send magic link</button>
+        <button class="btn ghost" onclick="window.showEmailStep(false)">Back</button>
+        <p class="hint">We’ll email you a one-time sign-in link.</p>
+      </div>
 
-    <button onclick="window.logout()">Logout</button>
+      <div id="startStep">
+        <button class="btn primary" onclick="window.showEmailStep(true)">Sign in</button>
+        <p class="hint">No password needed.</p>
+      </div>
+    </div>
 
-    <input id="taskInput" placeholder="New task..." />
-    <button onclick="window.addTask()">Add</button>
+    <!-- APP -->
+    <div id="appSection" class="card" style="display:none;">
+      <div class="row">
+        <h2 class="title small">My Tasks</h2>
+        <button class="btn ghost" onclick="window.logout()">Logout</button>
+      </div>
 
-    <ul id="taskList"></ul>
+      <div class="row">
+        <input id="taskInput" class="input" placeholder="New task..." />
+        <button class="btn primary" onclick="window.addTask()">Add</button>
+      </div>
+
+      <ul id="taskList" class="list"></ul>
+    </div>
   </div>
 
   <script>
-    console.log("window.supabase is", window.supabase);
+    // Safety check
+    if (!window.supabase) {
+      alert("Supabase library failed to load.");
+      throw new Error("Supabase library not loaded");
+    }
 
     const supabase = window.supabase.createClient(
       "https://jnfjjlrtnlumzutqqaxz.supabase.co",
       "sb_publishable_nWPp24vtvzSYk3LUMafu8Q_FuVtQwtn"
     );
 
-    async function login() {
-      // Remove this later if you want
-      // alert("login() called");
+    function showEmailStep(show) {
+      document.getElementById("emailStep").style.display = show ? "block" : "none";
+      document.getElementById("startStep").style.display = show ? "none" : "block";
+    }
 
+    async function login() {
       const email = document.getElementById("emailInput").value.trim();
       if (!email) return alert("Please enter your email");
 
@@ -62,10 +223,7 @@
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return alert("Not logged in.");
 
-      const { error } = await supabase.from("tasks").insert([
-        { title, user_id: user.id }
-      ]);
-
+      const { error } = await supabase.from("tasks").insert([{ title, user_id: user.id }]);
       if (error) alert("Insert error: " + error.message);
 
       input.value = "";
@@ -82,7 +240,6 @@
 
       const list = document.getElementById("taskList");
       list.innerHTML = "";
-
       data.forEach(task => {
         list.innerHTML += `<li>${task.title}</li>`;
       });
@@ -94,15 +251,22 @@
       document.getElementById("authSection").style.display = user ? "none" : "block";
       document.getElementById("appSection").style.display = user ? "block" : "none";
 
+      if (!user) showEmailStep(false);
       if (user) loadTasks();
     }
 
-    // Make functions callable from inline HTML
+    // Make callable from inline HTML
+    window.showEmailStep = showEmailStep;
     window.login = login;
     window.logout = logout;
     window.addTask = addTask;
 
     checkUser();
+
+    // Optional: keep UI in sync if session changes without reload
+    supabase.auth.onAuthStateChange(() => {
+      checkUser();
+    });
   </script>
 </body>
 </html>
