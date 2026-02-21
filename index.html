@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Tasks</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js"></script>
+</head>
+<body>
+  <h3 style="color:red">THIS IS THE FILE FROM VS CODE</h3>
+
+  <div id="authSection">
+    <h2>Login</h2>
+    <input id="emailInput" placeholder="Your email" />
+    <button onclick="window.login()">Send Magic Link</button>
+  </div>
+
+  <div id="appSection" style="display:none;">
+    <h1>My Task Manager</h1>
+
+    <button onclick="window.logout()">Logout</button>
+
+    <input id="taskInput" placeholder="New task..." />
+    <button onclick="window.addTask()">Add</button>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    console.log("window.supabase is", window.supabase);
+
+    const supabase = window.supabase.createClient(
+      "https://jnfjjlrtnlumzutqqaxz.supabase.co",
+      "sb_publishable_nWPp24vtvzSYk3LUMafu8Q_FuVtQwtn"
+    );
+
+    async function login() {
+      // Remove this later if you want
+      // alert("login() called");
+
+      const email = document.getElementById("emailInput").value.trim();
+      if (!email) return alert("Please enter your email");
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: "http://127.0.0.1:5500/index.html" }
+      });
+
+      if (error) alert("Error: " + error.message);
+      else alert("Magic link sent! Check inbox and spam.");
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      location.reload();
+    }
+
+    async function addTask() {
+      const input = document.getElementById("taskInput");
+      const title = input.value.trim();
+      if (!title) return;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return alert("Not logged in.");
+
+      const { error } = await supabase.from("tasks").insert([
+        { title, user_id: user.id }
+      ]);
+
+      if (error) alert("Insert error: " + error.message);
+
+      input.value = "";
+      loadTasks();
+    }
+
+    async function loadTasks() {
+      const { data, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) return alert("Load error: " + error.message);
+
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      data.forEach(task => {
+        list.innerHTML += `<li>${task.title}</li>`;
+      });
+    }
+
+    async function checkUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      document.getElementById("authSection").style.display = user ? "none" : "block";
+      document.getElementById("appSection").style.display = user ? "block" : "none";
+
+      if (user) loadTasks();
+    }
+
+    // Make functions callable from inline HTML
+    window.login = login;
+    window.logout = logout;
+    window.addTask = addTask;
+
+    checkUser();
+  </script>
+</body>
+</html>
