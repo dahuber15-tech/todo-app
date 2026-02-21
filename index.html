@@ -41,7 +41,7 @@
 
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: "todo-app-eight-plum-26.vercel.app" }
+        options: { emailRedirectTo: "https://todo-app-eight-plum-26.vercel.app/" }
       });
 
       if (error) alert("Error: " + error.message);
