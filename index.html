@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Tasks</title>
 
-  <!-- IMPORTANT: UMD build so window.supabase exists -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js"></script>
 
   <style>
@@ -26,62 +25,26 @@
       color: var(--text);
     }
 
-    .page {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
+    .page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
     .card {
-      width: min(520px, 100%);
+      width: min(980px, 100%);
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 28px;
+      padding: 22px;
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
 
-    .version {
-      text-align: center;
-      color: var(--muted);
-      margin: 0 0 14px;
-      font-size: 14px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
+    .version { text-align:center; color: var(--muted); margin:0 0 12px; font-size: 13px; letter-spacing:.06em; text-transform: uppercase; }
 
-    .title {
-      margin: 0 0 8px;
-      text-align: center;
-      font-size: 34px;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-    }
-    .title.small {
-      font-size: 22px;
-      text-align: left;
-      margin: 0;
-    }
+    .title { margin: 0 0 8px; text-align: center; font-size: 34px; line-height: 1.15; letter-spacing: -0.02em; }
+    .subtitle { margin: 0 0 18px; text-align: center; font-size: 18px; color: var(--muted); }
 
-    .subtitle {
-      margin: 0 0 18px;
-      text-align: center;
-      font-size: 18px;
-      color: var(--muted);
-    }
-
-    .label {
-      display: block;
-      margin: 8px 0 6px;
-      font-size: 16px;
-      color: var(--muted);
-    }
-
+    .label { display:block; margin: 10px 0 6px; font-size: 16px; color: var(--muted); }
     .input {
       width: 100%;
-      padding: 14px 14px;
+      padding: 14px;
       font-size: 18px;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -89,48 +52,70 @@
       color: var(--text);
       outline: none;
     }
-    .input::placeholder { color: rgba(255,255,255,0.45); }
 
     .btn {
       width: 100%;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 12px;
       border: 1px solid var(--border);
       font-size: 18px;
       cursor: pointer;
       margin-top: 12px;
-    }
-    .btn.primary {
-      background: rgba(255,255,255,0.14);
+      background: transparent;
       color: var(--text);
     }
+    .btn.primary { background: rgba(255,255,255,0.14); }
     .btn.primary:hover { background: rgba(255,255,255,0.20); }
-
-    .btn.ghost {
-      background: transparent;
-      color: var(--muted);
-    }
+    .btn.ghost { color: var(--muted); }
     .btn.ghost:hover { color: var(--text); }
 
-    .hint {
-      margin: 12px 0 0;
-      text-align: center;
-      font-size: 15px;
-      color: var(--muted);
-    }
+    .hint { margin: 12px 0 0; text-align: center; font-size: 15px; color: var(--muted); }
 
-    .row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 12px;
-    }
+    .row { display:flex; gap: 10px; align-items:center; margin-top: 12px; }
     .row .input { flex: 1; }
     .row .btn { width: auto; margin-top: 0; padding: 12px 14px; }
 
-    .list { list-style: none; padding: 0; margin: 16px 0 0; }
-    .list li {
+    .toolbar { display:flex; gap: 10px; align-items:center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; }
+    .toolbar-left { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+    .toolbar-right { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+
+    select {
       padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(0,0,0,0.14);
+      min-height: 260px;
+    }
+    .panel h3 { margin: 0 0 12px; font-size: 18px; color: var(--muted); font-weight: 600; }
+
+    ul { list-style: none; padding: 0; margin: 0; }
+
+    .task {
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
       border: 1px solid var(--border);
       border-radius: 12px;
       margin-bottom: 10px;
@@ -138,6 +123,21 @@
       font-size: 18px;
       word-break: break-word;
     }
+
+    .flag {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      display: inline-block;
+    }
+    .flag.p1 { background: #ff3b30; }        /* red */
+    .flag.p2 { background: #ffcc00; }        /* yellow/orange-ish */
+    .flag.p3 { background: #ffffff; }        /* white */
+    .flag.done { background: #34c759; }      /* green */
+
+    .muted { color: var(--muted); font-size: 14px; }
+    .task-title.done { text-decoration: line-through; color: var(--muted); }
   </style>
 </head>
 
@@ -145,7 +145,7 @@
   <div class="page">
     <!-- LOGIN -->
     <div id="authSection" class="card">
-      <div class="version">VERSION 2</div>
+      <div class="version">VERSION 3</div>
 
       <h1 class="title">Welcome to Your To-Do App</h1>
       <p class="subtitle">Sign in to sync tasks across devices.</p>
@@ -159,139 +159,282 @@
       </div>
 
       <div id="startStep">
-  <button class="btn primary" onclick="window.showEmailStep(true)">
-    Sign in with Email
-  </button>
-
-  <button class="btn ghost" onclick="window.adminLogin()">
-    Sign in as Admin (Test)
-  </button>
-
-  <p class="hint">Email = real login · Admin = testing only</p>
-</div>
+        <button class="btn primary" onclick="window.showEmailStep(true)">Sign in with Email</button>
+        <button class="btn ghost" onclick="window.adminLogin()">Sign in as Admin (Test)</button>
+        <p class="hint">Email = real login · Admin = testing only</p>
+      </div>
     </div>
 
     <!-- APP -->
     <div id="appSection" class="card" style="display:none;">
-      <div class="row">
-        <h2 class="title small">My Tasks</h2>
-        <button class="btn ghost" onclick="window.logout()">Logout</button>
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div class="muted">Folder</div>
+            <select id="folderSelect" onchange="window.onFolderChange()"></select>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div class="muted">Create folder</div>
+            <div class="row" style="margin:0;">
+              <input id="newFolderName" class="input" placeholder="e.g. Work" style="min-width: 220px;" />
+              <button class="btn primary" onclick="window.createFolder()">Create</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <button class="btn ghost" onclick="window.logout()">Logout</button>
+        </div>
       </div>
 
       <div class="row">
         <input id="taskInput" class="input" placeholder="New task..." />
+        <select id="prioritySelect" title="Priority">
+          <option value="1">Priority 1</option>
+          <option value="2">Priority 2</option>
+          <option value="3" selected>Priority 3</option>
+        </select>
         <button class="btn primary" onclick="window.addTask()">Add</button>
       </div>
 
-      <ul id="taskList" class="list"></ul>
+      <div class="grid">
+        <div class="panel">
+          <h3>Active</h3>
+          <ul id="activeList"></ul>
+        </div>
+
+        <div class="panel">
+          <h3>Completed</h3>
+          <ul id="doneList"></ul>
+        </div>
+      </div>
     </div>
   </div>
 
- <script>
-  // Safety check
-  if (!window.supabase) {
-    alert("Supabase library failed to load.");
-    throw new Error("Supabase library not loaded");
-  }
+  <script>
+    if (!window.supabase) {
+      alert("Supabase library failed to load.");
+      throw new Error("Supabase library not loaded");
+    }
 
-  const supabase = window.supabase.createClient(
-    "https://jnfjjlrtnlumzutqqaxz.supabase.co",
-    "sb_publishable_nWPp24vtvzSYk3LUMafu8Q_FuVtQwtn"
-  );
+    const supabase = window.supabase.createClient(
+      "https://jnfjjlrtnlumzutqqaxz.supabase.co",
+      "sb_publishable_nWPp24vtvzSYk3LUMafu8Q_FuVtQwtn"
+    );
 
-  function showEmailStep(show) {
-    document.getElementById("emailStep").style.display = show ? "block" : "none";
-    document.getElementById("startStep").style.display = show ? "none" : "block";
-  }
+    let currentFolderId = null;
 
-  async function login() {
-    const email = document.getElementById("emailInput").value.trim();
-    if (!email) return alert("Please enter your email");
+    function showEmailStep(show) {
+      document.getElementById("emailStep").style.display = show ? "block" : "none";
+      document.getElementById("startStep").style.display = show ? "none" : "block";
+    }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: "https://todo-app-eight-plum-26.vercel.app/" }
-    });
+    async function login() {
+      const email = document.getElementById("emailInput").value.trim();
+      if (!email) return alert("Please enter your email");
 
-    if (error) alert("Error: " + error.message);
-    else alert("Magic link sent! Check inbox and spam.");
-  }
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: "https://todo-app-eight-plum-26.vercel.app/" }
+      });
 
-  async function adminLogin() {
-    try {
-      const { data, error } = await supabase.auth.signInAnonymously();
-      console.log("signInAnonymously result:", { data, error });
+      if (error) alert("Error: " + error.message);
+      else alert("Magic link sent! Check inbox and spam.");
+    }
 
-      if (error) {
-        alert("Admin login error: " + error.message);
+    async function adminLogin() {
+      const { error } = await supabase.auth.signInAnonymously();
+      if (error) alert("Admin login error: " + error.message);
+      else checkUser();
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      location.reload();
+    }
+
+    async function ensureDefaultFolder() {
+      // If user has no folders, create "Inbox"
+      const { data: folders, error } = await supabase.from("folders").select("*").order("created_at", { ascending: true });
+      if (error) return;
+
+      if (!folders || folders.length === 0) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        await supabase.from("folders").insert([{ name: "Inbox", user_id: user.id }]);
+      }
+    }
+
+    async function loadFolders() {
+      const { data, error } = await supabase
+        .from("folders")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (error) return alert("Load folders error: " + error.message);
+
+      const select = document.getElementById("folderSelect");
+      select.innerHTML = "";
+
+      (data || []).forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.id;
+        opt.textContent = f.name;
+        select.appendChild(opt);
+      });
+
+      if (!currentFolderId && data && data.length) currentFolderId = data[0].id;
+      if (currentFolderId) select.value = currentFolderId;
+
+      await loadTasks();
+    }
+
+    async function createFolder() {
+      const nameInput = document.getElementById("newFolderName");
+      const name = nameInput.value.trim();
+      if (!name) return alert("Folder name required.");
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return alert("Not logged in.");
+
+      const { error } = await supabase.from("folders").insert([{ name, user_id: user.id }]);
+      if (error) return alert("Create folder error: " + error.message);
+
+      nameInput.value = "";
+      await loadFolders();
+    }
+
+    async function onFolderChange() {
+      const select = document.getElementById("folderSelect");
+      currentFolderId = select.value || null;
+      await loadTasks();
+    }
+
+    function flagClassForTask(task) {
+      if (task.completed) return "flag done";
+      if (task.priority === 1) return "flag p1";
+      if (task.priority === 2) return "flag p2";
+      return "flag p3";
+    }
+
+    function renderTaskItem(task) {
+      const li = document.createElement("li");
+      li.className = "task";
+
+      li.innerHTML = `
+        <input type="checkbox" ${task.completed ? "checked" : ""} />
+        <div class="${task.completed ? "task-title done" : "task-title"}">${escapeHtml(task.title)}</div>
+        <span class="${flagClassForTask(task)}" title="${task.completed ? "Completed" : "Priority " + task.priority}"></span>
+      `;
+
+      const checkbox = li.querySelector("input[type='checkbox']");
+      checkbox.addEventListener("change", async (e) => {
+        await toggleTask(task.id, e.target.checked);
+      });
+
+      return li;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function addTask() {
+      const input = document.getElementById("taskInput");
+      const title = input.value.trim();
+      if (!title) return;
+
+      const pr = parseInt(document.getElementById("prioritySelect").value, 10) || 3;
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return alert("Not logged in.");
+
+      const row = {
+        title,
+        user_id: user.id,
+        completed: false,
+        priority: pr,
+        folder_id: currentFolderId
+      };
+
+      const { error } = await supabase.from("tasks").insert([row]);
+      if (error) return alert("Insert error: " + error.message);
+
+      input.value = "";
+      await loadTasks();
+    }
+
+    async function toggleTask(id, completed) {
+      const { error } = await supabase.from("tasks").update({ completed }).eq("id", id);
+      if (error) return alert("Update error: " + error.message);
+      await loadTasks();
+    }
+
+    async function loadTasks() {
+      // folder_id filter (selected folder)
+      const query = supabase
+        .from("tasks")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      // show tasks only for chosen folder
+      // (if currentFolderId is null, we show tasks with null folder_id)
+      const { data, error } = currentFolderId
+        ? await query.eq("folder_id", currentFolderId)
+        : await query.is("folder_id", null);
+
+      if (error) return alert("Load tasks error: " + error.message);
+
+      const active = document.getElementById("activeList");
+      const done = document.getElementById("doneList");
+      active.innerHTML = "";
+      done.innerHTML = "";
+
+      // Sort active by priority (1 first), then created_at desc
+      const tasks = data || [];
+      const activeTasks = tasks.filter(t => !t.completed).sort((a,b) => (a.priority ?? 3) - (b.priority ?? 3));
+      const doneTasks = tasks.filter(t => t.completed);
+
+      activeTasks.forEach(t => active.appendChild(renderTaskItem(t)));
+      doneTasks.forEach(t => done.appendChild(renderTaskItem(t)));
+    }
+
+    async function checkUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      document.getElementById("authSection").style.display = user ? "none" : "block";
+      document.getElementById("appSection").style.display = user ? "block" : "none";
+
+      if (!user) {
+        showEmailStep(false);
         return;
       }
 
-      await checkUser();
-    } catch (e) {
-      console.error(e);
-      alert("Admin login crashed: " + (e?.message ?? e));
+      await ensureDefaultFolder();
+      await loadFolders();
     }
-  }
 
-  async function logout() {
-    await supabase.auth.signOut();
-    location.reload();
-  }
+    // Expose to window
+    window.showEmailStep = showEmailStep;
+    window.login = login;
+    window.adminLogin = adminLogin;
+    window.logout = logout;
+    window.addTask = addTask;
+    window.createFolder = createFolder;
+    window.onFolderChange = onFolderChange;
 
-  async function addTask() {
-    const input = document.getElementById("taskInput");
-    const title = input.value.trim();
-    if (!title) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return alert("Not logged in.");
-
-    const { error } = await supabase.from("tasks").insert([{ title, user_id: user.id }]);
-    if (error) alert("Insert error: " + error.message);
-
-    input.value = "";
-    loadTasks();
-  }
-
-  async function loadTasks() {
-    const { data, error } = await supabase
-      .from("tasks")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) return alert("Load error: " + error.message);
-
-    const list = document.getElementById("taskList");
-    list.innerHTML = "";
-    data.forEach(task => {
-      list.innerHTML += `<li>${task.title}</li>`;
-    });
-  }
-
-  async function checkUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    document.getElementById("authSection").style.display = user ? "none" : "block";
-    document.getElementById("appSection").style.display = user ? "block" : "none";
-
-    if (!user) showEmailStep(false);
-    if (user) loadTasks();
-  }
-
-  // Make callable from inline HTML
-  window.showEmailStep = showEmailStep;
-  window.login = login;
-  window.adminLogin = adminLogin;   // ✅ NOW it exists immediately
-  window.logout = logout;
-  window.addTask = addTask;
-
-  checkUser();
-
-  // Optional: keep UI in sync if session changes without reload
-  supabase.auth.onAuthStateChange(() => {
     checkUser();
-  });
-</script>
+
+    supabase.auth.onAuthStateChange(() => {
+      checkUser();
+    });
+  </script>
 </body>
 </html>
